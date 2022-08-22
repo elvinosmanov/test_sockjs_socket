@@ -16,6 +16,11 @@ class R {
   static const edit = 'assets/icons/edit.svg';
   static const back = 'assets/icons/back.svg';
   static const detailsVertical = 'assets/icons/details_vertical.svg';
+  static const check = 'assets/icons/check.svg';
+  static const attachment = 'assets/icons/attachment.svg';
+  static const hashtag = 'assets/icons/hashtag.svg';
+  static const smiles = 'assets/icons/smiles.svg';
+  static const send = 'assets/icons/send.svg';
 
   //image
   static const ellipse1Image = 'assets/images/ellipse_1.png';

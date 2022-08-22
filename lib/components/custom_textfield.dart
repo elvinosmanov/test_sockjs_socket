@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/core/styles.dart';
 import 'package:test_sockjs_socket/extensions/text_style_extension.dart';
@@ -7,7 +8,6 @@ import 'package:test_sockjs_socket/extensions/text_style_extension.dart';
 // ignore: must_be_immutable
 class CustomTextField extends StatefulWidget {
   final String? label;
-  final bool isMandatory;
   final TextEditingController controller;
   final FocusNode? focusNode;
   final bool? obscureText;
@@ -28,6 +28,7 @@ class CustomTextField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final TextStyle? hintStyle;
   final String? hintText;
+  final String? errorText;
   final Function()? onTap;
 
   final bool? enabled;
@@ -35,7 +36,6 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({
     Key? key,
     this.label,
-    this.isMandatory = false,
     required this.controller,
     this.focusNode,
     this.obscureText,
@@ -45,6 +45,8 @@ class CustomTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.suffixIcon,
+    this.prefixIcon,
+    this.helperText,
     this.suffix,
     this.prefix,
     this.onEditingComplete,
@@ -54,10 +56,9 @@ class CustomTextField extends StatefulWidget {
     this.contentPadding,
     this.hintStyle,
     this.hintText,
+    this.errorText,
     this.onTap,
     this.enabled,
-    this.prefixIcon,
-    this.helperText,
   }) : super(key: key);
 
   @override
@@ -92,11 +93,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
           filled: widget.filled ?? false,
           errorStyle: kRegularTextStyle(11, kRedColor),
           errorMaxLines: 3,
+          
+          errorText: widget.errorText,
           prefix: widget.prefix,
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
           suffix: widget.suffix,
-          isCollapsed: true,
+          // isCollapsed: true,
+          isDense: true,
           hintText: widget.hintText,
           hintStyle: widget.hintStyle ?? kSemiBoldTextStyle(15, kGreyColor),
           label: widget.label != null
