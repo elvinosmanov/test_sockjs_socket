@@ -17,6 +17,8 @@ class CustomTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
+  final String? helperText;
   final Widget? suffix;
   final Widget? prefix;
   final void Function()? onEditingComplete;
@@ -54,6 +56,8 @@ class CustomTextField extends StatefulWidget {
     this.hintText,
     this.onTap,
     this.enabled,
+    this.prefixIcon,
+    this.helperText,
   }) : super(key: key);
 
   @override
@@ -83,12 +87,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
       validator: widget.validator,
       onEditingComplete: widget.onEditingComplete,
       decoration: InputDecoration(
-          helperText: 'Required',
+          helperText: widget.helperText,
           helperStyle: kRegularTextStyle(12, kGreyColor),
           filled: widget.filled ?? false,
           errorStyle: kRegularTextStyle(11, kRedColor),
           errorMaxLines: 3,
           prefix: widget.prefix,
+          prefixIcon: widget.prefixIcon,
           suffixIcon: widget.suffixIcon,
           suffix: widget.suffix,
           isCollapsed: true,
@@ -100,7 +105,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   style: kRegularTextStyle(16, kGreyColor),
                 )
               : null,
-          contentPadding: widget.contentPadding ?? const EdgeInsets.all(16),
+          contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
           enabledBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
           focusedBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
           focusedErrorBorder: customOutlineInputBorder(color: kRedColor, width: 1),

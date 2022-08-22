@@ -6,8 +6,9 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:test_sockjs_socket/core/colors.dart';
-import 'package:test_sockjs_socket/screens/home_screen.dart';
+import 'package:test_sockjs_socket/screens/conversation/conversation_screen.dart';
 import 'package:test_sockjs_socket/screens/login_screen.dart';
+import 'package:test_sockjs_socket/screens/messages/messages_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -66,13 +67,13 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             appBarTheme: const AppBarTheme(
-              color: kBackgroundColor1,
+              color: kWhiteColor,
               toolbarHeight: 48.0,
               elevation: 0,
               centerTitle: true,
               titleTextStyle: TextStyle(color: kBlackColor),
             ),
             scaffoldBackgroundColor: kBackgroundColor1),
-        home: const HomeScreen());
+        home: const MessagesScreen());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:test_sockjs_socket/components/custom_textfield.dart';
 import 'package:test_sockjs_socket/core/R.dart';
 import 'package:test_sockjs_socket/core/colors.dart';
@@ -12,13 +13,17 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+      ),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.asset(R.botboxLogo).padding(top: 32, bottom: 78),
+            SvgPicture.asset(
+              R.botboxLogo,
+              fit: BoxFit.scaleDown,
+            ).padding(top: 32, bottom: 78),
             Text(
               'Welcome Back',
               style: kBoldTextStyle(24),
@@ -34,8 +39,9 @@ class LoginScreen extends StatelessWidget {
             CustomTextField(
               controller: TextEditingController(),
               label: "Password",
+              obscureText: true,
               suffixIcon: GestureDetector(
-                child: Image.asset(R.eyeOff).padding(all: 16),
+                child: SvgPicture.asset(R.eyeOff).padding(all: 16),
               ),
             ).padding(top: 20),
             SizedBox(
