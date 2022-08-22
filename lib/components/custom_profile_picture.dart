@@ -7,10 +7,11 @@ class ProfilePicture extends StatelessWidget {
   const ProfilePicture({
     Key? key,
     this.bigSize,
-    this.smallSize,
+    this.smallSize, required this.smallCircleColor,
   }) : super(key: key);
   final double? bigSize;
   final double? smallSize;
+  final Color smallCircleColor;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -31,7 +32,7 @@ class ProfilePicture extends StatelessWidget {
             height: smallSize ?? 12,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blue,
+                color: smallCircleColor,
                 border: Border.all(color: kWhiteColor, width: 1)),
           ),
         )

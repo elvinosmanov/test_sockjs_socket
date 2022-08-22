@@ -24,9 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   void _handleSubmitted() async {
-    print(emailController.text);
-    final apiResponse = await context.read<LoginProvider>().loginUser(emailController.text, passwordController.text);
+    final apiResponse = await context
+        .read<LoginProvider>()
+        .loginUser(emailController.text, passwordController.text);
     if (apiResponse.apiError == null) {
+      context.read<LoginProvider>().authToken = (apiResponse.data as ApiToken).data;
       // ignore: use_build_context_synchronously
       Navigator.push(
         context,
@@ -36,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } else {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text((apiResponse.apiError as ApiError).error ?? 'Error occured!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text((apiResponse.apiError as ApiError).error ?? 'Error occured!')));
     }
   }
 
@@ -127,10 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       _handleSubmitted();
                     }
                   },
-                  child: Text(
-                    'Sign in',
-                    style: kMediumTextStyle(16, kWhiteColor),
-                  ),
+                  child: context.watch<LoginProvider>().isLoading
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Text(
+                          'Sign in',
+                          style: kMediumTextStyle(16, kWhiteColor),
+                        ),
                 ),
               ).padding(top: 20, bottom: 36),
               Center(

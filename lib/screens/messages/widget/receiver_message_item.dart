@@ -12,15 +12,18 @@ class Receiver extends StatelessWidget {
     required this.name,
     required this.body,
     required this.dateTime,
+    this.padding, required this.isOnline,
   }) : super(key: key);
   final bool isMultiMessageSent;
   final String name;
   final String body;
   final String dateTime;
+  final bool isOnline;
+  final EdgeInsets? padding;
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: isMultiMessageSent ? 0 : 24),
+      padding: padding ?? EdgeInsets.only(top: isMultiMessageSent ? 0 : 24),
       child: Row(
         children: [
           Column(
@@ -30,7 +33,11 @@ class Receiver extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    const ProfilePicture(bigSize: 24, smallSize: 8),
+                     ProfilePicture(
+                      bigSize: 24,
+                      smallSize: 8,
+                      smallCircleColor: isOnline?kGreenColor:kGreyColor,
+                    ),
                     const SizedBox(width: 6),
                     Text(name, style: kMediumTextStyle(12, kGreyColor))
                   ],
@@ -39,7 +46,8 @@ class Receiver extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(right: 12),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                constraints: BoxConstraints(minWidth: 100, maxWidth: MediaQuery.of(context).size.width - 24 - 36),
+                constraints: BoxConstraints(
+                    minWidth: 100, maxWidth: MediaQuery.of(context).size.width - 24 - 36),
                 decoration: const BoxDecoration(
                     color: kBackgroundColor1,
                     borderRadius: BorderRadius.only(
@@ -48,15 +56,20 @@ class Receiver extends StatelessWidget {
                       bottomRight: Radius.circular(16),
                     )),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
                       body,
                       style: kRegularTextStyle(14),
                     ).padding(bottom: 4),
-                    Text(
-                      dateTime,
-                      style: kRegularTextStyle(12),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          dateTime,
+                          style: kRegularTextStyle(12),
+                        ),
+                      ],
                     )
                   ],
                 ),

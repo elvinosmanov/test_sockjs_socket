@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:test_sockjs_socket/components/custom_profile_picture.dart';
 import 'package:test_sockjs_socket/core/R.dart';
 import 'package:test_sockjs_socket/core/colors.dart';
@@ -9,13 +15,67 @@ import 'package:test_sockjs_socket/screens/messages/widget/sender_message_item.d
 
 import '../../core/styles.dart';
 
-class MessagesScreen extends StatelessWidget {
-  const MessagesScreen({Key? key}) : super(key: key);
+class MessagesScreen extends StatefulWidget {
+  const MessagesScreen(
+      {Key? key,
+      required this.conversationId,
+      required this.name,
+      required this.profession,
+      required this.isOnline})
+      : super(key: key);
+  final String conversationId;
+  final String name;
+  final String profession;
+  final bool isOnline;
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
+}
+
+class _MessagesScreenState extends State<MessagesScreen> {
+  final messageTextFieldController = TextEditingController();
+  var result;
+  late StompClient stompClient;
+  final randomNumberGenerator = Random();
+
+  void onConnect(StompFrame frame) {
+    stompClient.subscribe(
+      destination: '/ws/v1/conversations/${widget.conversationId}/messages?size=120&page=0',
+      callback: (frame) {
+        setState(() {
+          result = json.decode(frame.body!);
+        });
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // var token =  context.read<LoginProvider>().getSocketToken();
+    // print(token);
+    String token =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJDaGF0ZG9kb0NvbnZlcnNhdGlvblNlcnZpY2UiLCJpZCI6IlVTNmY3ODBlNTVmMzZkNDlkYmE5NGFlYzhkZTU1ZWUyZWIiLCJleHAiOjE2NzEzNTg2MTUsImlhdCI6MTY2MDU1ODYxNX0.BNO-KflcAiw-LaKUiUz45O382IMEyF4MmYieBXQe4Is';
+    stompClient = StompClient(
+      config: StompConfig.SockJS(
+        url: 'https://conversation-staging.chatdodo.com/ws-registration?token=$token',
+        onConnect: onConnect,
+        onStompError: (p0) => print('error'),
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ),
+    );
+    stompClient.activate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    stompClient.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(widget.name, widget.profession, widget.isOnline),
       body: Column(
         children: [
           Expanded(
@@ -28,49 +88,48 @@ class MessagesScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      children: <Widget>[
-                        _buildChatStartedContainer(),
-                        const Receiver(
-                          body: "Salam necesiniz?",
-                          name: 'Elvin Osmanov',
-                          dateTime: '09:45',
+                  _buildChatStartedContainer(),
+                  result != null
+                      ? Expanded(
+                          child: ListView.builder(
+                            itemCount: result.length,
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            itemBuilder: (BuildContext context, int index) {
+                              final randomBoolean = randomNumberGenerator.nextBool();
+                              var date = DateTime.fromMillisecondsSinceEpoch(
+                                  result['content'][index]['createDate']);
+                              DateFormat df = DateFormat('HH:mm');
+
+                              //Receiver ve ya Sender json datada ne oldugunu bilmediyim ucun random-dan istifade etdim.
+                              if (index == 0) {
+                                return Receiver(
+                                  isOnline: widget.isOnline,
+                                  padding: EdgeInsets.zero,
+                                  name: result['content'][index]['author']['metadata']['fullName'],
+                                  body: result['content'][index]['body'],
+                                  dateTime: df.format(date),
+                                  isMultiMessageSent: false,
+                                );
+                              }
+                              return randomBoolean
+                                  ? Sender(
+                                      body: result['content'][index]['body'],
+                                      dateTime: df.format(date),
+                                    )
+                                  : Receiver(
+                                      isOnline: widget.isOnline,
+                                      name: result['content'][index]['author']['metadata']
+                                          ['fullName'],
+                                      body: result['content'][index]['body'],
+                                      dateTime: df.format(date),
+                                      isMultiMessageSent: false,
+                                    );
+                            },
+                          ),
+                        )
+                      : const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                        const Sender(
-                          body:
-                              "Yaxsi cox sagolun. Yaxsi cox sagolun.Yaxsi cox sagols cox sagolun.Yaxsi cox sagolun.Yaxsi cox sagolun.Yaxsi cox sagolun.",
-                          dateTime: "10:00",
-                        ),
-                        const Sender(
-                          body: "Bes siz necesiniz?",
-                          dateTime: "10:01",
-                          isMultiMessageSent: true,
-                        ),
-                        const Receiver(
-                          body: "Salam necesiniz bfidbofjlkjbj sadkonfn hjkadfg  fsad  sfa fsd?",
-                          name: 'Elvin Osmanov',
-                          dateTime: '09:45',
-                        ),
-                        const Receiver(
-                          body: "Salam necesiniz?",
-                          name: 'Elvin Osmanov',
-                          dateTime: '09:45',
-                          isMultiMessageSent: true,
-                        ),
-                        const Sender(
-                          body: "Bes siz necesiniz?",
-                          dateTime: "10:01",
-                        ),
-                        const Receiver(
-                          body: "Salam necesiniz?",
-                          name: 'Elvin Osmanov',
-                          dateTime: '09:45',
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -92,6 +151,7 @@ class MessagesScreen extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextFieldController,
                       maxLines: null,
                       expands: true,
                       style: kRegularTextStyle(14),
@@ -118,10 +178,16 @@ class MessagesScreen extends StatelessWidget {
                           color: kBlueColor,
                           shape: BoxShape.circle,
                         ),
-                        child: SvgPicture.asset(
-                          R.send,
-                          fit: BoxFit.scaleDown,
-                          color: kWhiteColor,
+                        child: GestureDetector(
+                          onTap: () => stompClient.send(
+                              destination:
+                                  '/ws/v1/conversations/${widget.conversationId}/sendMessage',
+                              body: json.encode({"body": messageTextFieldController.text})),
+                          child: SvgPicture.asset(
+                            R.send,
+                            fit: BoxFit.scaleDown,
+                            color: kWhiteColor,
+                          ),
                         ),
                       )
                     ],
@@ -149,19 +215,23 @@ class MessagesScreen extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(String name, String profession, bool isOnline) {
     return AppBar(
+      automaticallyImplyLeading: false,
       titleSpacing: 0,
       centerTitle: true,
       title: Row(
         children: <Widget>[
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.maybePop(context);
+            },
             icon: SvgPicture.asset(R.left),
           ),
-          const ProfilePicture(
+          ProfilePicture(
             bigSize: 32,
             smallSize: 8,
+            smallCircleColor: isOnline ? kGreenColor : kGreyColor,
           ),
           const SizedBox(width: 24),
           Column(
@@ -169,11 +239,11 @@ class MessagesScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Jeremias del Pozo',
+                name,
                 style: kSemiBoldTextStyle(14),
               ),
               Text(
-                'Tester',
+                profession,
                 style: kMediumTextStyle(12, kGreyColor),
               )
             ],

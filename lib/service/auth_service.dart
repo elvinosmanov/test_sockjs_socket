@@ -9,22 +9,43 @@ class AuthService {
   Future<ApiResponse> loginUser(String email, String password) async {
     ApiResponse apiResponse = ApiResponse();
     String username = 'test';
-    String password = 'test';
-    String basicAuth = 'Basic ${base64.encode(utf8.encode('$username:$password'))}';
+    String pass = 'test';
+    String basicAuth = 'Basic ${base64.encode(utf8.encode('$username:$pass'))}';
 
     try {
       final response = await http.post(Uri.parse('$baseUrl/oauth/token'), headers: <String, String>{
-        "Accept": "application/json",
         'authorization': basicAuth,
       }, body: {
-        'email': 'flutter@test.com',
-        'password': 'Flutter123!',
+        'username': email,
+        'password': password,
         "scope": "read write",
         "client": "test",
         "grant_type": "password",
       });
+
       final json = jsonDecode(response.body);
-      print(json);
+      if (response.statusCode == 200) {
+        apiResponse.data = ApiToken.fromJson(json);
+      } else {
+        apiResponse.apiError = ApiError.fromJson(json);
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+    return apiResponse;
+  }
+
+  Future<ApiResponse> getSocketToken(String token) async {
+    ApiResponse apiResponse = ApiResponse();
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/oauth/token'),
+        headers: <String, String>{
+          'authorization': 'Bearer $token',
+        },
+      );
+
+      final json = jsonDecode(response.body);
       if (response.statusCode == 200) {
         apiResponse.data = ApiToken.fromJson(json);
       } else {

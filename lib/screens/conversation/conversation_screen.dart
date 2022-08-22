@@ -6,8 +6,11 @@ import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/core/styles.dart';
 import 'package:test_sockjs_socket/extensions/widget_padding_extension.dart';
 import 'package:test_sockjs_socket/screens/conversation/widgets/conversation_item.dart';
-
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 import '../../core/R.dart';
+import 'dart:convert';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen({Key? key}) : super(key: key);
@@ -19,6 +22,44 @@ class ConversationScreen extends StatefulWidget {
 class _ConversationScreenState extends State<ConversationScreen> {
   final _selectedSegment_02 = ValueNotifier('dms');
   int currentIndex = 1;
+  var result;
+  late StompClient stompClient;
+  void onConnect(StompFrame frame) {
+    stompClient.subscribe(
+      destination: '/ws/v1/conversations',
+      callback: (frame) {
+        setState(() {
+          result = json.decode(frame.body!);
+        });
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // var token =  context.read<LoginProvider>().getSocketToken();
+    // print(token);
+    String token =
+        'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIERldGFpbHMiLCJpc3MiOiJDaGF0ZG9kb0NvbnZlcnNhdGlvblNlcnZpY2UiLCJpZCI6IlVTNmY3ODBlNTVmMzZkNDlkYmE5NGFlYzhkZTU1ZWUyZWIiLCJleHAiOjE2NzEzNTg2MTUsImlhdCI6MTY2MDU1ODYxNX0.BNO-KflcAiw-LaKUiUz45O382IMEyF4MmYieBXQe4Is';
+    stompClient = StompClient(
+      config: StompConfig.SockJS(
+        url: 'https://conversation-staging.chatdodo.com/ws-registration?token=$token',
+        onConnect: onConnect,
+        onStompError: (p0) => print('error'),
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ),
+    );
+    stompClient.activate();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    stompClient.deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,24 +112,30 @@ class _ConversationScreenState extends State<ConversationScreen> {
             const SizedBox(
               height: 7,
             ),
-            Column(
-              children: const <Widget>[
-                ConversationItem(
-                    title: 'Jeremias del Pozo', profession: 'Tester', unreadMessagesCount: 21),
-                ConversationItem(
-                    title: 'Jeremias del Pozo', profession: 'Tester', unreadMessagesCount: 21),
-                ConversationItem(
-                    title: 'Jeremias del Pozo', profession: 'Tester', unreadMessagesCount: 21),
-                ConversationItem(
-                    title: 'Jeremias del Pozo', profession: 'Tester', unreadMessagesCount: 21),
-              ],
-            )
+            result != null
+                ? Expanded(
+                    child: ListView.builder(
+                      itemCount: result.length,
+                      itemBuilder: (context, index) {
+                        return ConversationItem(
+                            isOnline: result[index]['metadata']['user']['isOnline'],
+                            conversationId: result[index]['id'],
+                            title: result[index]['metadata']['user']['metadata']['fullName'],
+                            profession: 'Tester',
+                            unreadMessagesCount: result[index]['unreadMessagesCount']);
+                      },
+                    ),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(),
+                  )
           ],
         ));
   }
 
   AppBar _buildAppBar() {
     return AppBar(
+      automaticallyImplyLeading: false,
       titleSpacing: 0,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

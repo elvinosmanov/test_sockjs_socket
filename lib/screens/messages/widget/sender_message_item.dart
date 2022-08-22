@@ -12,7 +12,7 @@ class Sender extends StatelessWidget {
     Key? key,
     this.isMultiMessageSent = false,
     required this.body,
-    required this.dateTime,
+    required this.dateTime, 
   }) : super(key: key);
   final bool isMultiMessageSent;
   final String body;
@@ -36,14 +36,16 @@ class Sender extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(left: 12),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                constraints: BoxConstraints(minWidth: 100, maxWidth: MediaQuery.of(context).size.width - 24 - 36),
+                constraints: BoxConstraints(
+                    minWidth: 100, maxWidth: MediaQuery.of(context).size.width - 24 - 36),
                 decoration: BoxDecoration(
                     color: kBlueColor,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(16),
                       bottomLeft: const Radius.circular(16),
                       bottomRight: const Radius.circular(16),
-                      topRight: isMultiMessageSent ? const Radius.circular(16) : const Radius.circular(0),
+                      topRight:
+                          isMultiMessageSent ? const Radius.circular(16) : const Radius.circular(0),
                     )),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
