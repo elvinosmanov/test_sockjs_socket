@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         .read<LoginProvider>()
         .loginUser(emailController.text, passwordController.text);
     if (apiResponse.apiError == null) {
+      // ignore: use_build_context_synchronously
       context.read<LoginProvider>().authToken = (apiResponse.data as ApiToken).data;
       // ignore: use_build_context_synchronously
       Navigator.push(
@@ -52,31 +53,38 @@ class _LoginScreenState extends State<LoginScreen> {
     return passwordRegExp.hasMatch(value) ? null : 'Required';
   }
 
-  String? isValidEmail(String value) {
+  bool isValidEmail(String value) {
     final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-    if (value.isEmpty) {
-      return 'Required';
-    }
-    return emailRegExp.hasMatch(value) ? null : 'Required';
+
+    return emailRegExp.hasMatch(value);
   }
 
-  FocusNode _focusNode = FocusNode();
-  Color _borderColor = kLightGreyColor;
-  double _borderWidth = 1;
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  bool _emailHasFocus = false;
+  bool _passwordHasFocus = false;
+  bool _emailHasError = false;
+  bool _passwordHasError = false;
   @override
   void initState() {
     super.initState();
-    _focusNode.addListener(() {
+    _emailFocusNode.addListener(() {
+      print('girdi');
       setState(() {
-        _borderColor = _focusNode.hasFocus ? kLightPurpleColor : kLightGreyColor;
-        _borderWidth = _focusNode.hasFocus ? 2 : 1;
+        _emailHasFocus = _emailFocusNode.hasFocus;
+      });
+    });
+    _passwordFocusNode.addListener(() {
+      setState(() {
+        _passwordHasFocus = _passwordFocusNode.hasFocus;
       });
     });
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _passwordFocusNode.dispose();
+    _emailFocusNode.dispose();
     super.dispose();
   }
 
@@ -93,77 +101,49 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SvgPicture.asset(
-                R.botboxLogo,
-                fit: BoxFit.scaleDown,
-              ).padding(top: 32, bottom: 78),
+              Image.asset(R.chatdodoLogoImage).padding(top: 32, bottom: 84),
               Text(
                 'Welcome Back',
-                style: kBoldTextStyle(24),
+                style: kBoldTextStyle(32),
               ),
               Text(
                 'Please login to your account',
-                style: kRegularTextStyle(14, kGreyColor),
-              ).padding(top: 8, bottom: 32),
-              Stack(
-                children: [
-                  Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                        borderRadius: kRadius8, border: Border.all(color: _borderColor, width: _borderWidth)),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: CustomTextField(
-                      contentPadding: const EdgeInsets.all(18),
-                      controller: emailController,
-                      focusNode: _focusNode,
-                      helperText: 'Required',
-                      textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (String? value) {
-                        return isValidEmail(value!);
-                      },
-                      label: "Email",
-                    ),
-                  ),
-                ],
-              ),
+                style: kRegularTextStyle(16, kGreyColor),
+              ).padding(bottom: 32),
               CustomTextField(
-                controller: passwordController,
-                label: "Password",
-                helperText: 'Required',
-                contentPadding: const EdgeInsets.all(16),
-                obscureText: isObscure,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.visiblePassword,
-                validator: (String? value) {
-                  return isValidPassword(value!);
-                },
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isObscure = !isObscure;
-                    });
-                  },
-                  child: SvgPicture.asset(
-                    !isObscure ? R.eyeOff : R.eyeOn,
-                    fit: BoxFit.scaleDown,
-                  ).padding(all: 16),
-                ),
-              ).padding(top: 20),
+                controller: emailController,
+                focusNode: _emailFocusNode,
+                label: 'Email',
+                hasFocus: _emailHasFocus,
+                hasError: _emailHasError,
+              ),
+              Text(
+                'Required',
+                style: kRegularTextStyle(12, _emailHasError ? kRedColor : kGreyColor),
+              ).padding(left: 12, top: 2),
+              _buildEmailTextField().padding(top: 20),
+              Text(
+                'Required',
+                style: kRegularTextStyle(12, kGreyColor),
+              ).padding(left: 12, top: 2),
               SizedBox(
                 height: 56,
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kPurpleColor)),
                   onPressed: () {
-                    bool isVal = loginFormKey.currentState!.validate();
-                    if (isVal) {
-                      _handleSubmitted();
+                    bool isValEmail = isValidEmail(emailController.text);
+                    print(isValEmail);
+                    if (isValEmail) {
+                      _emailHasError = false;
+                      // _handleSubmitted();
+                    } else {
+                      _emailHasError = true;
                     }
+                    setState(() {});
                   },
                   child: context.watch<LoginProvider>().isLoading
-                      ? Center(
+                      ? const Center(
                           child: CircularProgressIndicator(),
                         )
                       : Text(
@@ -175,11 +155,38 @@ class _LoginScreenState extends State<LoginScreen> {
               Center(
                   child: Text(
                 'Forgot password',
-                style: kMediumTextStyle(16, kBlueColor),
+                style: kMediumTextStyle(16, kPurpleColor),
               ))
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  CustomTextField _buildEmailTextField() {
+    return CustomTextField(
+      hasFocus: _passwordHasFocus,
+      focusNode: _passwordFocusNode,
+      controller: passwordController,
+      label: "Password",
+      obscureText: isObscure,
+      textInputAction: TextInputAction.done,
+      keyboardType: TextInputType.visiblePassword,
+      validator: (String? value) {
+        return isValidPassword(value!);
+      },
+      suffixIcon: GestureDetector(
+        onTap: () {
+          setState(() {
+            isObscure = !isObscure;
+          });
+        },
+        child: SvgPicture.asset(
+          !isObscure ? R.eyeOff : R.eyeOn,
+          fit: BoxFit.scaleDown,
+          color: kGreyColor,
+        ).padding(all: 16),
       ),
     );
   }

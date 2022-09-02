@@ -1,7 +1,7 @@
 // ignore: file_names
 class R {
   //icons
-  static const botboxLogo = 'assets/icons/botbox.svg';
+  static const chatdodoLogo = 'assets/icons/chatdodoLogo.svg';
   static const eyeOn = 'assets/icons/eye_on.svg';
   static const eyeOff = 'assets/icons/eye_off.svg';
   static const home = 'assets/icons/home.svg';
@@ -25,5 +25,6 @@ class R {
   //image
   static const ellipse1Image = 'assets/images/ellipse_1.png';
   static const ellipse2Image = 'assets/images/ellipse_2.png';
+  static const chatdodoLogoImage = 'assets/images/chatdodoLogo.png';
 
 }

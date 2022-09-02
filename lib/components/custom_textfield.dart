@@ -12,6 +12,8 @@ class CustomTextField extends StatefulWidget {
   final FocusNode? focusNode;
   final bool? obscureText;
   final bool? filled;
+  final bool hasFocus;
+  final bool hasError;
   final int? maxLines;
   final TextInputType? keyboardType;
   final void Function(String)? onChanged;
@@ -40,6 +42,8 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.obscureText,
     this.filled,
+    this.hasFocus = false,
+    this.hasError = false,
     this.maxLines,
     this.keyboardType,
     this.onChanged,
@@ -66,71 +70,75 @@ class CustomTextField extends StatefulWidget {
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      // style: kMediumTextStyle(16).copyWith(height: 1),
-      controller: widget.controller,
-      focusNode: widget.focusNode,
-      inputFormatters: widget.inputFormatters,
-      obscureText: widget.obscureText ?? false,
-      enabled: widget.enabled,
-      maxLines: (widget.obscureText ?? false) ? 1 : widget.maxLines,
-      keyboardType: widget.keyboardType,
-      textInputAction: widget.textInputAction ?? TextInputAction.next,
-      onTap: widget.onTap,
-      onChanged: (value) {
-        if (widget.onChanged != null) {
-          widget.onChanged!(value);
-        }
-      },
-      onFieldSubmitted: widget.onSubmitted,
-      validator: widget.validator,
-      onEditingComplete: widget.onEditingComplete,
-      cursorHeight: 24,
-      cursorColor: kPurpleColor,
-      decoration: InputDecoration(
-        labelStyle: kMediumTextStyle(16, kGreyColor),
-
-        helperText: widget.helperText,
-        // helperStyle: kRegularTextStyle(12, kGreyColor),
-        // filled: true ?? widget.filled ?? false,
-        // fillColor: Colors.red.withOpacity(0.4),
-        // errorStyle: kRegularTextStyle(11, kRedColor),
-        // errorMaxLines: 3,
-        errorText: widget.errorText,
-        prefix: widget.prefix,
-        prefixIcon: widget.prefixIcon,
-        suffixIcon: widget.suffixIcon,
-        suffix: widget.suffix,
-        // isDense: true,
-        // isCollapsed: true,
-
-        // hintText: widget.hintText,
-        // hintStyle: widget.hintStyle ?? kSemiBoldTextStyle(15, kGreyColor),
-        label: widget.label != null
-            ? Text(
-                widget.label!,
-                style: kRegularTextStyle(16, kGreyColor),
-              )
-            : null,
-        contentPadding: widget.contentPadding ?? const EdgeInsets.only(left: 12),
-        border: InputBorder.none,
-        // enabledBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
-        // focusedBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
-        // focusedErrorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
-        // errorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
-        // border: customOutlineInputBorder(color: kLightGreyColor, width: 1),
-      ),
-    );
+  Color setBorderColor() {
+    if (widget.hasError) {
+      return kRedColor;
+    } else if (widget.hasFocus) {
+      return kPurpleColor;
+    } else {
+      return kGreyColor;
+    }
   }
 
-  OutlineInputBorder customOutlineInputBorder({required Color color, required double width}) {
-    return OutlineInputBorder(
-      borderRadius: kRadius8,
-      borderSide: BorderSide(
-        color: color,
-        width: width,
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 56,
+      child: Stack(
+        children: [
+          Container(
+            height: 56,
+            decoration: BoxDecoration(
+                borderRadius: kRadius8,
+                border: Border.all(
+                    color: setBorderColor(), width: (widget.hasFocus && !widget.hasError) ? 2 : 1)),
+          ),
+          Align(
+              alignment: Alignment.center,
+              child: TextFormField(
+                style: kMediumTextStyle(16).copyWith(height: 24 / 16),
+                controller: widget.controller,
+                focusNode: widget.focusNode,
+                inputFormatters: widget.inputFormatters,
+                obscureText: widget.obscureText ?? false,
+                enabled: widget.enabled,
+                maxLines: (widget.obscureText ?? false) ? 1 : widget.maxLines,
+                keyboardType: widget.keyboardType,
+                textInputAction: widget.textInputAction ?? TextInputAction.next,
+                onTap: widget.onTap,
+                onChanged: (value) {
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(value);
+                  }
+                },
+                onFieldSubmitted: widget.onSubmitted,
+                validator: widget.validator,
+                onEditingComplete: widget.onEditingComplete,
+                cursorColor: kPurpleColor,
+                cursorHeight: 24,
+                cursorRadius: const Radius.circular(5),
+                obscuringCharacter: "*",
+                decoration: InputDecoration(
+                  labelStyle: kMediumTextStyle(16, kGreyColor),
+                  floatingLabelStyle: kRegularTextStyle(12, kYellowColor),
+                  helperText: widget.helperText,
+                  errorText: widget.errorText,
+                  prefix: widget.prefix,
+                  prefixIcon: widget.prefixIcon,
+                  suffixIcon: widget.suffixIcon,
+                  suffix: widget.suffix,
+                  label: widget.label != null
+                      ? Text(
+                          widget.label!,
+                          style: kRegularTextStyle(16, kGreyColor).copyWith(height: 1.2),
+                        )
+                      : null,
+                  contentPadding:
+                      widget.contentPadding ?? const EdgeInsets.only(left: 12, top: 6, bottom: 10),
+                  border: InputBorder.none,
+                ),
+              )),
+        ],
       ),
     );
   }
