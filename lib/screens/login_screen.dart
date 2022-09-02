@@ -47,17 +47,37 @@ class _LoginScreenState extends State<LoginScreen> {
     final passwordRegExp = RegExp(r'^((?!.*[\s])(?=.*\d).{5,15})');
 
     if (value.isEmpty) {
-      return 'This field can\'t be empty';
+      return 'Required';
     }
-    return passwordRegExp.hasMatch(value) ? null : 'Password not valid';
+    return passwordRegExp.hasMatch(value) ? null : 'Required';
   }
 
   String? isValidEmail(String value) {
     final emailRegExp = RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     if (value.isEmpty) {
-      return 'This field can\'t be empty';
+      return 'Required';
     }
-    return emailRegExp.hasMatch(value) ? null : 'Email not valid';
+    return emailRegExp.hasMatch(value) ? null : 'Required';
+  }
+
+  FocusNode _focusNode = FocusNode();
+  Color _borderColor = kLightGreyColor;
+  double _borderWidth = 1;
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {
+        _borderColor = _focusNode.hasFocus ? kLightPurpleColor : kLightGreyColor;
+        _borderWidth = _focusNode.hasFocus ? 2 : 1;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,16 +105,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Please login to your account',
                 style: kRegularTextStyle(14, kGreyColor),
               ).padding(top: 8, bottom: 32),
-              CustomTextField(
-                contentPadding: const EdgeInsets.all(18),
-                controller: emailController,
-                helperText: 'Required',
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                validator: (String? value) {
-                  return isValidEmail(value!);
-                },
-                label: "Email",
+              Stack(
+                children: [
+                  Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                        borderRadius: kRadius8, border: Border.all(color: _borderColor, width: _borderWidth)),
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: CustomTextField(
+                      contentPadding: const EdgeInsets.all(18),
+                      controller: emailController,
+                      focusNode: _focusNode,
+                      helperText: 'Required',
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (String? value) {
+                        return isValidEmail(value!);
+                      },
+                      label: "Email",
+                    ),
+                  ),
+                ],
               ),
               CustomTextField(
                 controller: passwordController,
