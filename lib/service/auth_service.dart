@@ -19,12 +19,12 @@ class AuthService {
       }, body: {
         'email': 'flutter@test.com',
         'password': 'Flutter123!',
-        "scope": "read write",
         "client": "test",
         "grant_type": "password",
       });
       final json = jsonDecode(response.body);
       print(json);
+      
       if (response.statusCode == 200) {
         apiResponse.data = ApiToken.fromJson(json);
       } else {

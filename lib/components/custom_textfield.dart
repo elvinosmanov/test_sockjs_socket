@@ -69,13 +69,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: kRegularTextStyle(15),
+      // style: kMediumTextStyle(16).copyWith(height: 1),
       controller: widget.controller,
       focusNode: widget.focusNode,
       inputFormatters: widget.inputFormatters,
       obscureText: widget.obscureText ?? false,
       enabled: widget.enabled,
-      maxLines: widget.obscureText ?? false ? 1 : widget.maxLines,
+      maxLines: (widget.obscureText ?? false) ? 1 : widget.maxLines,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction ?? TextInputAction.next,
       onTap: widget.onTap,
@@ -87,34 +87,41 @@ class _CustomTextFieldState extends State<CustomTextField> {
       onFieldSubmitted: widget.onSubmitted,
       validator: widget.validator,
       onEditingComplete: widget.onEditingComplete,
+      cursorHeight: 24,
+      cursorColor: kPurpleColor,
       decoration: InputDecoration(
-          helperText: widget.helperText,
-          helperStyle: kRegularTextStyle(12, kGreyColor),
-          filled: widget.filled ?? false,
-          errorStyle: kRegularTextStyle(11, kRedColor),
-          errorMaxLines: 3,
-          
-          errorText: widget.errorText,
-          prefix: widget.prefix,
-          prefixIcon: widget.prefixIcon,
-          suffixIcon: widget.suffixIcon,
-          suffix: widget.suffix,
-          // isCollapsed: true,
-          isDense: true,
-          hintText: widget.hintText,
-          hintStyle: widget.hintStyle ?? kSemiBoldTextStyle(15, kGreyColor),
-          label: widget.label != null
-              ? Text(
-                  widget.label!,
-                  style: kRegularTextStyle(16, kGreyColor),
-                )
-              : null,
-          contentPadding: widget.contentPadding ?? const EdgeInsets.all(12),
-          enabledBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
-          focusedBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
-          focusedErrorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
-          errorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
-          border: customOutlineInputBorder(color: kLightGreyColor, width: 1)),
+        labelStyle: kMediumTextStyle(16, kGreyColor),
+
+        helperText: widget.helperText,
+        // helperStyle: kRegularTextStyle(12, kGreyColor),
+        // filled: true ?? widget.filled ?? false,
+        // fillColor: Colors.red.withOpacity(0.4),
+        // errorStyle: kRegularTextStyle(11, kRedColor),
+        // errorMaxLines: 3,
+        errorText: widget.errorText,
+        prefix: widget.prefix,
+        prefixIcon: widget.prefixIcon,
+        suffixIcon: widget.suffixIcon,
+        suffix: widget.suffix,
+        // isDense: true,
+        // isCollapsed: true,
+
+        // hintText: widget.hintText,
+        // hintStyle: widget.hintStyle ?? kSemiBoldTextStyle(15, kGreyColor),
+        label: widget.label != null
+            ? Text(
+                widget.label!,
+                style: kRegularTextStyle(16, kGreyColor),
+              )
+            : null,
+        contentPadding: widget.contentPadding ?? const EdgeInsets.only(left: 12),
+        border: InputBorder.none,
+        // enabledBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
+        // focusedBorder: customOutlineInputBorder(color: kLightGreyColor, width: 1),
+        // focusedErrorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
+        // errorBorder: customOutlineInputBorder(color: kRedColor, width: 1),
+        // border: customOutlineInputBorder(color: kLightGreyColor, width: 1),
+      ),
     );
   }
 

@@ -3,7 +3,6 @@ import 'package:test_sockjs_socket/core/colors.dart';
 
 const String fontFamily = "Inter";
 
-
 ///Default black color setted
 TextStyle kBoldTextStyle(double fontSize, [Color? color]) {
   return TextStyle(
