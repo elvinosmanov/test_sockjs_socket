@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/core/styles.dart';
-import 'package:test_sockjs_socket/extensions/text_style_extension.dart';
 
 // ignore: must_be_immutable
 class CustomTextField extends StatefulWidget {
@@ -86,7 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       height: 56,
       child: Stack(
         children: [
-          Container(
+          Container( 
             height: 56,
             decoration: BoxDecoration(
                 borderRadius: kRadius8,

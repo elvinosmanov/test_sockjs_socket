@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_advanced_segment/flutter_advanced_segment.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:test_sockjs_socket/components/custom_textfield.dart';
 import 'package:test_sockjs_socket/core/colors.dart';
@@ -100,7 +99,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                           border: Border.all(color: kBorderColor, width: 1),
                         ),
                         child: SvgPicture.asset(
-                          R.messages,
+                          R.leadsFilled,
                           fit: BoxFit.scaleDown,
                         ),
                       )
@@ -179,14 +178,14 @@ class _ConversationScreenState extends State<ConversationScreen> {
             BottomNavigationBarItem(
               label: 'Messages',
               icon: SvgPicture.asset(
-                currentIndex == 1 ? R.messagesFilled : R.messages,
+                currentIndex == 1 ? R.leadsFilled : R.leadsFilled,
                 fit: BoxFit.scaleDown,
               ),
             ),
             BottomNavigationBarItem(
               label: 'Leads',
               icon: SvgPicture.asset(
-                currentIndex == 2 ? R.inboxFilled : R.inbox,
+                currentIndex == 2 ? R.leadsFilled : R.leadsFilled,
                 fit: BoxFit.scaleDown,
               ),
             ),
@@ -212,21 +211,6 @@ class CustomSegment extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(1),
         decoration: BoxDecoration(color: kBorderColor, borderRadius: kRadius8),
-        child: AdvancedSegment(
-            controller: _selectedSegment_02,
-            segments: const {
-              'live_chat': 'Live Chat',
-              'dms': 'DMs',
-              'groups': 'Groups',
-            },
-            itemPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-            sliderDecoration: BoxDecoration(
-              color: kWhiteColor,
-              borderRadius: kRadius8,
-            ),
-            backgroundColor: kBackgroundColor2,
-            inactiveStyle: kMediumTextStyle(16, kGreyColor),
-            activeStyle: kSemiBoldTextStyle(16)),
       ),
     );
   }

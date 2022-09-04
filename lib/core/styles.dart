@@ -8,6 +8,7 @@ TextStyle kBoldTextStyle(double fontSize, [Color? color]) {
   return TextStyle(
     fontFamily: fontFamily,
     color: color ?? kBlackColor,
+    height: 1.24,
     fontSize: fontSize,
     fontWeight: FontWeight.w700,
   );
@@ -19,6 +20,7 @@ TextStyle kSemiBoldTextStyle(double fontSize, [Color? color]) {
     fontFamily: fontFamily,
     color: color ?? kBlackColor,
     fontSize: fontSize,
+    height: 1.24,
     fontWeight: FontWeight.w600,
   );
 }
@@ -28,6 +30,7 @@ TextStyle kMediumTextStyle(double fontSize, [Color? color]) {
   return TextStyle(
     fontFamily: fontFamily,
     color: color ?? kBlackColor,
+    height: 1.24,
     fontSize: fontSize,
     fontWeight: FontWeight.w500,
   );
@@ -37,6 +40,7 @@ TextStyle kRegularTextStyle(double fontSize, [Color? color]) {
   return TextStyle(
     fontFamily: fontFamily,
     color: color ?? kBlackColor,
+    height: 1.24,
     fontSize: fontSize,
     fontWeight: FontWeight.w400,
   );

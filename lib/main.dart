@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/provider/login_provider.dart';
-import 'package:test_sockjs_socket/screens/login_screen.dart';
+import 'package:test_sockjs_socket/screens/messages/messages_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
                 titleTextStyle: TextStyle(color: kBlackColor),
               ),
               scaffoldBackgroundColor: kBackgroundColor1),
-          home: const LoginScreen()),
+          home:   MessagesScreen()),
     );
   }
 }

@@ -44,13 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  String? isValidPassword(String value) {
+  bool isValidPassword(String value) {
     final passwordRegExp = RegExp(r'^((?!.*[\s])(?=.*\d).{5,15})');
 
-    if (value.isEmpty) {
-      return 'Required';
-    }
-    return passwordRegExp.hasMatch(value) ? null : 'Required';
+    return passwordRegExp.hasMatch(value);
   }
 
   bool isValidEmail(String value) {
@@ -124,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
               _buildEmailTextField().padding(top: 20),
               Text(
                 'Required',
-                style: kRegularTextStyle(12, kGreyColor),
+                style: kRegularTextStyle(12, _emailHasError ? kRedColor : kGreyColor),
               ).padding(left: 12, top: 2),
               SizedBox(
                 height: 56,
@@ -133,13 +130,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: ButtonStyle(backgroundColor: MaterialStateProperty.all(kPurpleColor)),
                   onPressed: () {
                     bool isValEmail = isValidEmail(emailController.text);
-                    print(isValEmail);
+                    bool isValPass = isValidPassword(passwordController.text);
                     if (isValEmail) {
                       _emailHasError = false;
                       // _handleSubmitted();
                     } else {
                       _emailHasError = true;
                     }
+                    if (isValPass) {
+                      _passwordHasError = false;
+                      // _handleSubmitted();
+                    } else {
+                      _passwordHasError = true;
+                    }
+
                     setState(() {});
                   },
                   child: context.watch<LoginProvider>().isLoading
@@ -169,13 +173,11 @@ class _LoginScreenState extends State<LoginScreen> {
       hasFocus: _passwordHasFocus,
       focusNode: _passwordFocusNode,
       controller: passwordController,
+      hasError: _passwordHasError,
       label: "Password",
       obscureText: isObscure,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.visiblePassword,
-      validator: (String? value) {
-        return isValidPassword(value!);
-      },
       suffixIcon: GestureDetector(
         onTap: () {
           setState(() {

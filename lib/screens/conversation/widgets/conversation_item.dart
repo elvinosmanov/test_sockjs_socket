@@ -29,12 +29,7 @@ class ConversationItem extends StatelessWidget {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MessagesScreen(
-            isOnline: isOnline,
-            conversationId: conversationId,
-            name: title,
-            profession: profession,
-          ),
+          builder: (context) => MessagesScreen(),
         ),
       ),
       child: Container(
