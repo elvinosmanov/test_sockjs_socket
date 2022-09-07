@@ -1,11 +1,11 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:test_sockjs_socket/core/R.dart';
 import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/core/styles.dart';
 import 'package:test_sockjs_socket/extensions/widget_padding_extension.dart';
-import 'package:test_sockjs_socket/screens/messages/widget/custom_message_list_item.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({Key? key}) : super(key: key);
@@ -20,7 +20,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: buildAppBar(),
+        appBar: const CustomAppBar(
+          prefixText: 'Live chat',
+          suffixText: 'Archived',
+        ),
         bottomNavigationBar: _buildBottomAppBar(),
         body: Column(
           children: <Widget>[
@@ -36,10 +39,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   ),
                 ),
                 child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const SizedBox(height: 184),
-                    CustomMessageListItem(),
+                    // const CustomMessageListItem(),
                     DottedBorder(
                         borderType: BorderType.Circle,
                         color: kDarkGreyColor,
@@ -63,37 +65,13 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       'You have no active chats.\nIf you have active chats, they are listed here.',
                       textAlign: TextAlign.center,
                       style: kMediumTextStyle(14, kGreyColor).copyWith(height: 1.42),
-                    ).padding(left: 24, top: 24, bottom: 24)
+                    ).padding(all: 24)
                   ],
                 ),
               ),
             )
           ],
         ));
-  }
-
-  AppBar buildAppBar() {
-    return AppBar(
-      titleSpacing: 0,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            TextButton(
-              style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.zero)),
-              onPressed: () {},
-              child: Text('Live chat', style: kBoldTextStyle(16)),
-            ),
-            TextButton(
-              style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.zero)),
-              onPressed: () {},
-              child: Text('Archived', style: kBoldTextStyle(16, kPurpleColor)),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   BottomAppBar _buildBottomAppBar() {
@@ -158,6 +136,45 @@ class _MessagesScreenState extends State<MessagesScreen> {
       ),
     );
   }
+}
+
+class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
+  const CustomAppBar({
+    Key? key,
+    required this.prefixText,
+    required this.suffixText,
+  }) : super(key: key);
+  final String prefixText;
+  final String suffixText;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      titleSpacing: 0,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            TextButton(
+              style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.zero)),
+              onPressed: () {},
+              child: Text(prefixText, style: kBoldTextStyle(16)),
+            ),
+            TextButton(
+              style: ButtonStyle(padding: MaterialStateProperty.all(EdgeInsets.zero)),
+              onPressed: () {},
+              child: Text(suffixText, style: kBoldTextStyle(16, kPurpleColor)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class CustomSearcHTextfield extends StatelessWidget {

@@ -7,9 +7,8 @@ import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/core/styles.dart';
 import 'package:test_sockjs_socket/extensions/widget_padding_extension.dart';
 import 'package:test_sockjs_socket/provider/login_provider.dart';
-import 'package:test_sockjs_socket/screens/conversation/conversation_screen.dart';
 
-import '../models/api_response.dart';
+import '../../models/api_response.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -23,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  // ignore: unused_element
   void _handleSubmitted() async {
     final apiResponse = await context
         .read<LoginProvider>()
@@ -31,12 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // ignore: use_build_context_synchronously
       context.read<LoginProvider>().authToken = (apiResponse.data as ApiToken).data;
       // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ConversationScreen(),
-        ),
-      );
+      
     } else {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
@@ -66,7 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _emailFocusNode.addListener(() {
-      print('girdi');
       setState(() {
         _emailHasFocus = _emailFocusNode.hasFocus;
       });

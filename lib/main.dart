@@ -6,10 +6,10 @@ import 'package:test_sockjs_socket/core/colors.dart';
 import 'package:test_sockjs_socket/provider/login_provider.dart';
 import 'package:test_sockjs_socket/screens/messages/messages_screen.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
                 titleTextStyle: TextStyle(color: kBlackColor),
               ),
               scaffoldBackgroundColor: kBackgroundColor1),
-          home:   MessagesScreen()),
+          home:   const MessagesScreen()),
     );
   }
 }
